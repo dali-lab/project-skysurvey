@@ -1,215 +1,524 @@
-<!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!-->
-<!-- Adapted from initializr template by Runi Goswami -->
-<html class="no-js" lang="">
-<!--<![endif]-->
-
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>15F DALI Dev</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="shortcut icon" href="favicon.ico" />
 
-  <!-- loads a google font -->
-  <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet' type='text/css'>
+<!--[if lt IE 9]><script src="./excanvas.min.js"></script><![endif]-->
+	<title>Sky Survey</title>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link href="css/chardinjs.css" rel="stylesheet">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
+	<script src="chardinjs.min.js"></script>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="css/h5bp.css">
+<!--
+<style>
+	body {
+		background: #fff;
+		font-family: Helvetica, sans-serif;
+		color: black;
+	}
+	li.options .i {
+		clear: both;
+		min-height: 2em;
+	}
+	li.options .p {
+		display: inline-block;
+		width: 10em;
+	}
+	li.options .o {
+		display: inline-block;
+		margin-right: 16px;
+	}
+	li.options .h {
+		margin-bottom: 1em;
+		display: inline-block;
+		opacity: 0.2;
+		filter: alpha(20);
+	}
+	li.options .i:hover .h {
+		opacity: 0.7;
+		filter: alpha(70);
+	}
+</style>-->
+<!--<script src="jquery-1.10.0.min.js"></script>-->
+<style>
+    body {
+        font: 400 15px Lato, sans-serif;
+        line-height: 1.8;
+        color: #818181;
+    }
+h2 {
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #303030;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+h4 {
+    font-size: 19px;
+    line-height: 1.375em;
+    color: #303030;
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+.jumbotron {
+    background-color: #3F2A5E;
+    color: #fff;
+    padding: 100px 25px;
+    font-family: Montserrat, sans-serif;
+}
+.container-fluid {
+    padding:60px 50px;
+}
+.bg-grey {
+    background-color: #f6f6f6;
+}
+.logo-small {
+    color: #f4511e;
+    font-size: 50px;
+}
+.logo {
+    color: #f4511e;
+    font-size: 200px;
+}
+.thumbnail {
+    padding: 0 0 15px 0;
+    border: none;
+    border-radius: 0;
+}
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
+}
+.item h4 {
+    font-size: 19px;
+    line-height: 1.375em;
+    font-weight: 400;
+    font-style: italic;
+    margin: 70px 0;
+}
+.item span {
+    font-style: normal;
+}
+.panel {
+    border: 1px solid #f4511e;
+    border-radius:0 !important;
+    transition: box-shadow 0.5s;
+}
+.panel:hover {
+    box-shadow: 5px 0px 40px rgba(0,0,0, .2);
+}
+.panel-footer .btn:hover {
+    border: 1px solid #f4511e;
+    background-color: #fff !important;
+    color: #f4511e;
+}
+.panel-heading {
+    color: #fff !important;
+    background-color: #f4511e !important;
+    padding: 25px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+.panel-footer {
+    background-color: white !important;
+}
+.panel-footer h3 {
+    font-size: 32px;
+}
+.panel-footer h4 {
+    color: #aaa;
+    font-size: 14px;
+}
+.panel-footer .btn {
+    margin: 15px 0;
+    background-color: #f4511e;
+    color: #fff;
+}
+.navbar {
+    margin-bottom: 0;
+    background-color: #3F2A5E;
+    z-index: 9999;
+    border: 0;
+    font-size: 12px !important;
+    line-height: 1.42857143 !important;
+    letter-spacing: 4px;
+    border-radius: 0;
+    font-family: Montserrat, sans-serif;
+}
+.navbar li a, .navbar .navbar-brand {
+    color: #fff !important;
+}
+.navbar-nav li a:hover, .navbar-nav li.active a {
+    color: #3F2A5E !important;
+    background-color: #fff !important;
+}
+.navbar-default .navbar-toggle {
+    border-color: transparent;
+    color: #fff !important;
+}
+footer .glyphicon {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #f4511e;
+}
+@media screen and (max-width: 768px) {
+    .col-sm-4 {
+        text-align: center;
+        margin: 25px 0;
+    }
+    .btn-lg {
+        width: 100%;
+        margin-bottom: 35px;
+    }
+}
+@media screen and (max-width: 480px) {
+    .logo {
+        font-size: 150px;
+    }
+}
+</style>
 
-  <!-- loads your css -->
-  <link rel="stylesheet" href="css/main.css">
+<script src="virtualsky.js" type="text/javascript"></script>
 
-  <!-- loads jquery and initializr shims -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+<script>
+$(document).ready(function() {
+// 		planetarium = $.virtualsky({id:'preview',width:500,height:350});
+		window.onload = function(){
+			skydefault = $.virtualsky({});
+			$('.version').html(skydefault.version);
+			planetarium = $.virtualsky({
+				width: window.innerWidth,
+				height: (window.innerHeight - 300),
+                id: 'starmap1',
+                projection: 'gnomic',
+                ra: 214,
+                dec: 53,
+                negative: false,
+                constellations: true,
+                showstars: true,
+                showplanets: true,
+                keyboard: true,
+                gridlines_az: false,
+				gridlines_eq: false,
+				gridlines_gal: false
+
+//                 fov: '50'
+        	});
+			planetarium.draw();
+			update();
+
+
+//         planetarium.addPointer({
+//         	'ra':152.75,
+//             'dec':.25,
+//             'label':'Test Box',
+//             'img':'https://pbs.twimg.com/profile_images/378800000822867536/3f5a00acf72df93528b6bb7cd0a4fd0c.jpeg',
+//             'url':'http://aegis.ucolick.org/tech_overview.html',
+//             'credit':'Wikisky',
+//             'colour':'rgb(255,220,220)'
+//         })
+
+
+		   planetarium.addPointer({
+			   'ra1':265,
+			   'dec':29,
+			   'label':'SDSS',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':237.5,
+			   'dec':4,
+			   'label':'VISTA:KIDS',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':50,
+			   'dec':-22,
+			   'label':'VISTA:KIDS',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':60,
+			   'dec':-17,
+			   'label':'VISTA:ATLAS',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':232.5,
+			   'dec':-8,
+			   'label':'VISTA:ATLAS',
+			   'colour':'rgb(255,220,220)',
+			   'type': 'survey'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':102.5,
+			   'dec':-30,
+			   'label':'VISTA:DES',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':50,
+			   'dec':0.1,
+			   'label':'VISTA:DES',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':30.2,
+			   'dec':-8,
+			   'label':'GAMMA:G02',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':141,
+			   'dec':3,
+			   'label':'GAMMA:G09',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':174,
+			   'dec':2,
+			   'label':'GAMMA:G12',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':211.5,
+			   'dec':3,
+			   'label':'GAMMA:G15',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+		   planetarium.addPointer({
+			   'ra':351,
+			   'dec':-30,
+			   'label':'GAMAMA:G23',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+
+		   planetarium.addPointer({
+			   'ra':214.75,
+			   'dec':52.75,
+			   'label':'AEGIS Surveys',
+			   'img':'http://localhost/~Nicky/VirtualSky-master/Metadata/AegisSurveyMetadata.jpg',
+			   'url':'http://localhost/~Nicky/VirtualSky-master/Metadata/AegisSurveyMetadata.pdf',
+			   'credit':'AEGIS',
+			   'colour':'rgb(255,220,220)'
+		   })
+
+	//         $('button#testbox').on('click',function(){
+	//                 planetarium.panTo(152.75,0.25,3000)
+	//         });
+			
+		 //  	var options = $("#options");
+			// $.each(result, function() {
+			//     options.append($("<option />").val(this.ImageFolderID).text(this.Name));
+			// });
+
+			
+			// We're going to want this to locate to the survey pointer
+
+		   $('button#locate').on('click',function(){
+		   		   coords = $("#surveyOpts").val().split(",")
+
+		   		   console.log(coords)
+
+				   planetarium.panTo(parseFloat(coords[0]),parseFloat(coords[1]),3000)
+		   });
+
+		   $('body').chardinJs('start');
+
+		   // Used for creating a menu on the side of the page
+		   // $('.left.demo.sidebar').first().sidebar('attach events', '.toggle.button');
+		   // $('.toggle.button').removeClass('disabled');
+
+
+        };
+});
+
+function update(el) {
+			property = (el) ? el.name : "";
+			value = (el) ? el.value : "";
+
+			planetarium.draw();
+
+			var str = "<iframe width=\""+planetarium.wide+"\" height=\""+planetarium.tall+"\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" src=\"";
+			var uri = "http://lcogt.net/virtualsky/embed/?";
+			uri += "longitude="+(planetarium.longitude*planetarium.r2d);
+			uri += "&latitude="+(planetarium.latitude*planetarium.r2d);
+
+			if(skydefault.showgalaxy != planetarium.showgalaxy) uri += "&showgalaxy="+planetarium.showgalaxy;
+
+			str += encodeURI(uri);
+			str += "\" allowTransparency=\"true\"></iframe>";
+
+			el = document.getElementById('embedcode');
+// 			el.value = str;
+
+}
+
+function resize(el) {
+			planetarium.fullScreenSet();
+}
+
+function zoomIn(el){
+			planetarium.changeFOV(-.5).draw();
+}
+
+function zoomOut(el){
+			planetarium.changeFOV(.5).draw();
+}
+
+function moveUp(el){
+			planetarium.panTo(this.ra, this.dec+5, 1000);
+			planetarium.setRA(this.ra);
+			planetarium.setDec(this.dec+5);
+}
+
+function moveDown(el){
+			planetarium.panTo(this.ra, this.dec-5, 1000);
+			planetarium.setRA(this.ra);
+			planetarium.setDec(this.dec-5);
+}
+
+function moveRight(el){
+			planetarium.panTo(this.ra-5, this.dec, 1000);
+			planetarium.setRA(this.ra-5);
+			planetarium.setDec(this.dec);
+}
+
+function moveLeft(el){
+			planetarium.panTo(this.ra+5, this.dec, 1000);
+			planetarium.setRA(this.ra+5);
+			planetarium.setDec(this.dec);
+}
+
+
+
+
+
+
+</script>
 
 </head>
 
-<body class="loading">
-  <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+<body id="home">
 
-  <main>
-
-    <section id="cover-0" class="cover">
-      <div class="baselayer" data-center="background-position: 50% 0px;" data-top-bottom="background-position: 50% -75px;" data-anchor-target="#cover-0">
-      </div>
-    </section>
-
-    <section id="content-0" class="content">
-      <div class="baselayer">
-
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center">
-              <h1>Hello, World</h4>
-                <hr>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-8 col-md-offset-2 text-center">
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when a printer took a galley of type and scrambled it to make a type specimen book.</p>
-            </div>
-          </div>
-
-          <div class="row text-center">
-            <div class="glyphicon glyphicon-heart example-glyphs"></div>
-          </div>
-
-          <br>
-
-          <div class="row">
-            <div class="col-md-6">
-              <p class="text">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia,
-                looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.</p>
-            </div>
-
-            <div class="col-md-6">
-              <p class="text">Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The
-                first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
-            </div>
-          </div>
+<!-- Navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#home">Sky Survey</a>
         </div>
-      </div>
-    </section>
-
-    <section id="cover-1" class="cover">
-      <div class="baselayer" data-center="background-position: 50% 0px;" data-top-bottom="background-position: 50% -75px;" data-anchor-target="#cover-1">
-        <div class="row" style="height:40%"></div>
-        <span class="row">
-          <span class="col-md-4 col-md-offset-4">
-            <h2>Look, a majestic butterfly!</h2>
-          </span>
-        </span>
-      </div>
-    </section>
-
-    <!-- MEET THE TEAM -->
-    <section id="content-1" class="content">
-      <div class="baselayer">
-
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6 col-md-offset-3 text-center">
-              <h1>The Team</h1>
-              <hr>
-            </div>
-          </div>
-          <!--/row -->
-
-          <!-- first row of teammates -->
-          <div class="row">
-            <div class="col-sm-4 text-center">
-              <p class="testimonial">
-                <img src="img/kitten.jpg" class="img-circle aligncenter" alt="">
-              </p>
-              <h6>Name Name</h6>
-              <p class="centered testimonial">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
-            </div>
-            <div class="col-sm-4 text-center">
-              <p class="testimonial">
-                <img src="img/kitten.jpg" class="img-circle aligncenter" alt="">
-              </p>
-              <h6>Other Name</h6>
-              <p class="centered testimonial">All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words.</p>
-            </div>
-            <div class="col-sm-4 text-center">
-              <p class="testimonial">
-                <img src="img/kitten.jpg" class="img-circle aligncenter" alt="">
-              </p>
-              <h6>Name Name</h6>
-              <p class="centered testimonial">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
-            </div>
-          </div>
-
-          <!-- second row of teammates -->
-          <div class="row">
-            <div class="col-sm-4 text-center">
-              <p class="testimonial">
-                <img src="img/kitten.jpg" class="img-circle aligncenter" alt="">
-              </p>
-              <h6>Name Name</h6>
-              <p class="centered testimonial">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
-            </div>
-            <div class="col-sm-4 text-center">
-              <p class="testimonial">
-                <img src="img/kitten.jpg" class="img-circle aligncenter" alt="">
-              </p>
-              <h6>Other Name</h6>
-              <p class="centered testimonial">All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words.</p>
-            </div>
-            <div class="col-sm-4 text-center">
-              <p class="testimonial">
-                <img src="img/kitten.jpg" class="img-circle aligncenter" alt="">
-              </p>
-              <h6>Other Name</h6>
-              <p class="centered testimonial">All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words.</p>
-            </div>
-          </div>
-
-
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#home">HOME</a></li>
+                <li><a href="upload.html">UPLOAD SURVEY</a></li>
+                <li><a href="contact.html">CONTACT</a></li>
+            </ul>
         </div>
-      </div>
-    </section>
+    </div>
+</nav>
+
+<!-- Headline and Introduction -->
+<div class="jumbotron text-center">
+    <h1>Sky Survey</h1>
+    <p>a collective database of survey coverage maps and metadata from  telescopes around the world</p>
+</div>
+
+<div class="text-center">
+
+<!-- Insert Map Here -->
+    <div id="starmap1" class="center-block" data-intro="<h3><b>The Skymap!</b> The <i>boxes are surveys</i>, with their names displayed along their edges. Drag your mouse to navigate the map. Enjoy!</h3>" data-position="top"></div>
+<!-- <button id="testbox">Move to The Test Box</button> -->
+    <div class="btn-group" align="center" style="padding:60px" data-intro="<h3><b>Controls</b> for the map. Toggle visual aspects according to your need.</h3>" data-position="right">
+        <select class="form-control" id="surveyOpts">
+ 	 	</select>
+ 	 	<button type="button" class="btn btn-default" id="locate">Locate</button>
+ 	 	<!-- Attempt to resize canvas button1 -->
+ 	 	<button type="button" name="btn1" class="btn btn-warning" aria-pressed="false" onClick="resize(this)"> Resize </button>
+
+ 	<!-- //  	<script>
+		 	$(document).ready(function(){
+     			$('#resize').click(function(){
+     		   		  var ctx = this.canvas;
+		 			  ctx.canvas.width  = window.innerWidth;
+		 			  ctx.canvas.height = window.innerHeight;
+		 			  alert("Should resize")
+     			});
+   			}); 
+		// </script> -->
+ 	 	<!-- <button type="button" class="btn btn-danger" id="resize">Resize</button> -->
+
+ 	 	<!-- Attempt to resize canvas button2 -->
+ 	 	<!-- <button type="button" class="btn btn-danger" id="resize">Resize</button> -->
+ 	  	<!-- Attempt to create popover with metadata -->
+		<!-- <button type="button" class="btn btn-info" data-container="body" data-toggle="popover" data-placement="top" data-content=planetarium.surveys[0].attribs.Area> Popover Example </button> -->
+   		<!-- Attempt to create zoom buttons -->
+   		<input type="button" value ="-" onclick="zoomIn(this)"/>
+  		<input type="button" value ="+" onclick="zoomOut(this)"/>
+    </div>
+    <div class="navButtons">
+    	<button type="button" class="btn btn-danger" id="moveUp" onClick="moveUp(this)">Up</button>
+    	<button type="button" class="btn btn-danger" id="moveDown" onClick="moveDown(this)">Down</button>
+    	<button type="button" class="btn btn-danger" id="moveRight" onClick="moveRight(this)">Right</button>
+    	<button type="button" class="btn btn-danger" id="moveLeft" onClick="moveLeft(this)">Left</button>
+    </div>
+    <div class="ui sidebar inverted vertical menu">
+	    <a class="item">
+	      1
+	    </a>
+	    <a class="item">
+	      2
+	    </a>
+	    <a class="item">
+	      3
+	    </a>
+	 </div> <!-- sidebar div -->
+	 <div class="pusher">
+	    <!-- Site content !-->
+	 </div>
+</div>
 
 
-
-  </main>
-
-  <section id="footer">
-    <div></div>
-    <footer>
-      <div class="container">
-
-        <div class="row footerlinks">
-          <div class="row">
-            <div class="text-center">
-              <a href="http://dali.dartmouth.edu/" target="_blank">
-                <img class="dali-logo" src="img/DALI_logo.png">
-              </a>
-            </div>
-          </div>
-
-        </div>
-    </footer>
-  </section>
-
-
-
-  <!-- load some vendor vs -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  <script src="js/vendor/imagesloaded.js"></script>
-  <script src="js/vendor/skrollr.js"></script>
-
-  <!-- load my js -->
-  <script src="js/main.js"></script>
-
-  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-  <script>
-    (function(b, o, i, l, e, r) {
-      b.GoogleAnalyticsObject = l;
-      b[l] || (b[l] =
-        function() {
-          (b[l].q = b[l].q || []).push(arguments)
-        });
-      b[l].l = +new Date;
-      e = o.createElement(i);
-      r = o.getElementsByTagName(i)[0];
-      e.src = '//www.google-analytics.com/analytics.js';
-      r.parentNode.insertBefore(e, r)
-    }(window, document, 'script', 'ga'));
-    ga('create', 'UA-XXXXX-X', 'auto');
-    ga('send', 'pageview');
-  </script>
+<!-- Map Display Options -->
+<div class="container-fluid bg-grey">
+<form>
+<ol>
+	<li class="options">
+		<div class="i">
+			<div class="p">Show Survey Boxes?</div>
+			<div class="o">
+			<input type="radio" name="showgalaxy" value="true" onChange="update(this)" checked /> Yes
+			<input type="radio" name="showgalaxy" value="false" onChange="moveRight(this)"  /> No
+			</div>
+		</div>
+	</li>
+</ol>
+</form>
+</div>
 
 </body>
-
 </html>
