@@ -6,12 +6,16 @@
 	<title>Sky Survey</title>
   	<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
   	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link href="css/chardinjs.css" rel="stylesheet">
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
-	<script src="chardinjs.min.js"></script>
+	<script src="js/chardinjs.min.js"></script>
 
 <!--
 <style>
@@ -49,6 +53,7 @@
         font: 400 15px Lato, sans-serif;
         line-height: 1.8;
         color: #818181;
+        overflow: hidden;
     }
 h2 {
     font-size: 24px;
@@ -144,7 +149,6 @@ h4 {
 }
 .navbar {
     margin-bottom: 0;
-    background-color: #3F2A5E;
     z-index: 9999;
     border: 0;
     font-size: 12px !important;
@@ -152,13 +156,15 @@ h4 {
     letter-spacing: 4px;
     border-radius: 0;
     font-family: Montserrat, sans-serif;
+    background-color: transparent;
 }
 .navbar li a, .navbar .navbar-brand {
     color: #fff !important;
+    background-color: transparent;
 }
 .navbar-nav li a:hover, .navbar-nav li.active a {
-    color: #3F2A5E !important;
-    background-color: #fff !important;
+    color: #fff !important;
+    background-color: #0f2d5e !important;
 }
 .navbar-default .navbar-toggle {
     border-color: transparent;
@@ -184,9 +190,21 @@ footer .glyphicon {
         font-size: 150px;
     }
 }
+
+.survey-infobox {
+	position: absolute;
+	font-size: 0.8em;
+	float: left;
+	width: 150px;
+}
+
+.survey-infoitem {
+	padding: 2px 5px !important; 
+}
+
 </style>
 
-<script src="virtualsky.js" type="text/javascript"></script>
+<script src="js/virtualsky.js" type="text/javascript"></script>
 
 <script>
 $(document).ready(function() {
@@ -196,144 +214,30 @@ $(document).ready(function() {
 			$('.version').html(skydefault.version);
 			planetarium = $.virtualsky({
 				width: window.innerWidth,
-				height: (window.innerHeight - 300),
+				height: (window.innerHeight),
                 id: 'starmap1',
                 projection: 'gnomic',
-                ra: 214,
-                dec: 53,
+                latitude: 214,
+                longitude: 53,
                 negative: false,
                 constellations: true,
                 showstars: true,
-                showplanets: true,
                 keyboard: true,
-                gridlines_az: false,
+                showgalaxy: false,
+                gridlines_az: true,
 				gridlines_eq: false,
-				gridlines_gal: false
+				gridlines_gal: false,
+				showdate: false,
+				showposition: false
 
 //                 fov: '50'
         	});
 			planetarium.draw();
-			update();
+			// update();
 
+			$('#settingsButton').css({top: ((window.innerHeight/2) - 120) + 'px'});
 
-//         planetarium.addPointer({
-//         	'ra':152.75,
-//             'dec':.25,
-//             'label':'Test Box',
-//             'img':'https://pbs.twimg.com/profile_images/378800000822867536/3f5a00acf72df93528b6bb7cd0a4fd0c.jpeg',
-//             'url':'http://aegis.ucolick.org/tech_overview.html',
-//             'credit':'Wikisky',
-//             'colour':'rgb(255,220,220)'
-//         })
-
-
-		   planetarium.addPointer({
-			   'ra1':265,
-			   'dec':29,
-			   'label':'SDSS',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':237.5,
-			   'dec':4,
-			   'label':'VISTA:KIDS',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':50,
-			   'dec':-22,
-			   'label':'VISTA:KIDS',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':60,
-			   'dec':-17,
-			   'label':'VISTA:ATLAS',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':232.5,
-			   'dec':-8,
-			   'label':'VISTA:ATLAS',
-			   'colour':'rgb(255,220,220)',
-			   'type': 'survey'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':102.5,
-			   'dec':-30,
-			   'label':'VISTA:DES',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':50,
-			   'dec':0.1,
-			   'label':'VISTA:DES',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':30.2,
-			   'dec':-8,
-			   'label':'GAMMA:G02',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':141,
-			   'dec':3,
-			   'label':'GAMMA:G09',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':174,
-			   'dec':2,
-			   'label':'GAMMA:G12',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':211.5,
-			   'dec':3,
-			   'label':'GAMMA:G15',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-		   planetarium.addPointer({
-			   'ra':351,
-			   'dec':-30,
-			   'label':'GAMAMA:G23',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-
-		   planetarium.addPointer({
-			   'ra':214.75,
-			   'dec':52.75,
-			   'label':'AEGIS Surveys',
-			   'img':'http://localhost/~Nicky/VirtualSky-master/Metadata/AegisSurveyMetadata.jpg',
-			   'url':'http://localhost/~Nicky/VirtualSky-master/Metadata/AegisSurveyMetadata.pdf',
-			   'credit':'AEGIS',
-			   'colour':'rgb(255,220,220)'
-		   })
-
-	//         $('button#testbox').on('click',function(){
-	//                 planetarium.panTo(152.75,0.25,3000)
-	//         });
-			
-		 //  	var options = $("#options");
-			// $.each(result, function() {
-			//     options.append($("<option />").val(this.ImageFolderID).text(this.Name));
-			// });
-
-			
-			// We're going to want this to locate to the survey pointer
+			$('#zoomButtons').css({top: (window.innerHeight - 120) + 'px'})
 
 		   $('button#locate').on('click',function(){
 		   		   coords = $("#surveyOpts").val().split(",")
@@ -343,12 +247,55 @@ $(document).ready(function() {
 				   planetarium.panTo(parseFloat(coords[0]),parseFloat(coords[1]),3000)
 		   });
 
-		   $('body').chardinJs('start');
+		    $("#surveyToggle").click(function(e) {
+    			planetarium.showsurveys = !planetarium.showsurveys;
+    			planetarium.draw();
+    		});
 
-		   // Used for creating a menu on the side of the page
-		   // $('.left.demo.sidebar').first().sidebar('attach events', '.toggle.button');
-		   // $('.toggle.button').removeClass('disabled');
+    		$("#starToggle").click(function(e) {
+    			planetarium.showstars = !planetarium.showstars;
+    			planetarium.draw();
+    		});
 
+    		$("#constellationToggle").click(function(e) {
+    			planetarium.constellation.lines = !planetarium.constellation.lines;
+    			planetarium.draw();
+    		});
+
+    		$("#colToggle").click(function(e) {
+    			planetarium.negative = !planetarium.negative;
+    			planetarium.draw();
+    		});
+
+    		$("#zoomInButton").click(function(e) {
+    			planetarium.changeFOV(.5).draw();
+    		});
+
+    		$("#zoomOutButton").click(function(e) {
+    			planetarium.changeFOV(-.5).draw();
+    		});
+
+    		$('input[type=radio][name=gridlineOption]').change(function() {
+		        if (this.value == 'AZ') {
+		            planetarium.grid.gal = false;
+		        	planetarium.grid.az = true;
+		        	planetarium.grid.eq = false;
+		        	planetarium.draw();
+		        }
+		        else if (this.value == 'EQ') {
+		            planetarium.grid.gal = false;
+		        	planetarium.grid.az = false;
+		        	planetarium.grid.eq = true;
+		        	planetarium.draw();
+		        } else if (this.value == 'GAL') {
+		        	planetarium.grid.gal = true;
+		        	planetarium.grid.az = false;
+		        	planetarium.grid.eq = false;
+		        	planetarium.draw();
+		        }
+		    });
+
+		   // $('body').chardinJs('start');
 
         };
 });
@@ -372,153 +319,130 @@ function update(el) {
 			el = document.getElementById('embedcode');
 // 			el.value = str;
 
+
 }
-
-function resize(el) {
-			planetarium.fullScreenSet();
-}
-
-function zoomIn(el){
-			planetarium.changeFOV(-.5).draw();
-}
-
-function zoomOut(el){
-			planetarium.changeFOV(.5).draw();
-}
-
-function moveUp(el){
-			planetarium.panTo(this.ra, this.dec+5, 1000);
-			planetarium.setRA(this.ra);
-			planetarium.setDec(this.dec+5);
-}
-
-function moveDown(el){
-			planetarium.panTo(this.ra, this.dec-5, 1000);
-			planetarium.setRA(this.ra);
-			planetarium.setDec(this.dec-5);
-}
-
-function moveRight(el){
-			planetarium.panTo(this.ra-5, this.dec, 1000);
-			planetarium.setRA(this.ra-5);
-			planetarium.setDec(this.dec);
-}
-
-function moveLeft(el){
-			planetarium.panTo(this.ra+5, this.dec, 1000);
-			planetarium.setRA(this.ra+5);
-			planetarium.setDec(this.dec);
-}
-
-
-
-
-
 
 </script>
+
 
 </head>
 
 <body id="home">
 
-<!-- Navbar -->
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#home">Sky Survey</a>
-        </div>
-        <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#home">HOME</a></li>
-                <li><a href="upload.html">UPLOAD SURVEY</a></li>
-                <li><a href="contact.html">CONTACT</a></li>
+<div id="wrapper" class="toggled">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+
+            	<li class = 'sidebar-brand'>
+                </li>
+
+                <li>
+                	<div>
+	                	<div class = 'col-md-8'>
+	                		<select class="form-control" id='surveyOpts'></select>
+	                	</div>
+
+	                	<div class = 'col-md-4'>
+	                		<button type="button" id="locate" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-search"></span> </button>
+	                	</div>
+                	</div>
+                </li>
+
+                <br>
+                <br>
+
+                <li>
+                    <a href = "#" id="surveyToggle">Show Surveys </a>
+                </li>
+
+                <li>
+                    <a href = "#" id="colToggle">Negative </a>
+                </li>
+
+                <li>
+                    <a href = "#" id="starToggle">Show Stars</a>
+                </li>
+                <li>
+                    <a href = "#" id="constellationToggle">Show Constellations</a>
+                </li>
+                <li>
+                    <a href="#">
+                    Gridlines<br>
+                    <label class="radio-inline">
+					  <input type="radio" name="gridlineOption" id="azRadio" value="AZ" checked="checked"> AZ
+					</label>
+					<label class="radio-inline">
+					  <input type="radio" name="gridlineOption" id="eqRadio" value="EQ"> EQ
+					</label>
+					<label class="radio-inline">
+					  <input type="radio" name="gridlineOption" id="galRadio" value="GAL"> GAL
+					</label>
+					</a>
+                </li>
+
             </ul>
         </div>
-    </div>
-</nav>
+        <!-- /#sidebar-wrapper -->
 
-<!-- Headline and Introduction -->
-<div class="jumbotron text-center">
-    <h1>Sky Survey</h1>
-    <p>a collective database of survey coverage maps and metadata from  telescopes around the world</p>
-</div>
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <nav id="navBar" class="navbar navbar-default navbar-fixed-top">
+			    <div class="container">
+			        <div class="navbar-header">
+			            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+			                <span class="icon-bar"></span>
+			                <span class="icon-bar"></span>
+			                <span class="icon-bar"></span>
+			            </button>
+			            <a class="navbar-brand" href="#home">Sky Survey</a>
+			        </div>
+			        <div class="collapse navbar-collapse" id="myNavbar">
+			            <ul class="nav navbar-nav navbar-right">
+			                <li><a href="#home">HOME</a></li>
+			                <li><a href="upload.html">UPLOAD SURVEY</a></li>
+			                <li><a href="contact.html">CONTACT</a></li>
+			            </ul>
+			        </div>
+			    </div>
+			</nav>
 
-<div class="text-center">
+			<div class="text-center">
 
-<!-- Insert Map Here -->
-    <div id="starmap1" class="center-block" data-intro="<h3><b>The Skymap!</b> The <i>boxes are surveys</i>, with their names displayed along their edges. Drag your mouse to navigate the map. Enjoy!</h3>" data-position="top"></div>
-<!-- <button id="testbox">Move to The Test Box</button> -->
-    <div class="btn-group" align="center" style="padding:60px" data-intro="<h3><b>Controls</b> for the map. Toggle visual aspects according to your need.</h3>" data-position="right">
-        <select class="form-control" id="surveyOpts">
- 	 	</select>
- 	 	<button type="button" class="btn btn-default" id="locate">Locate</button>
- 	 	<!-- Attempt to resize canvas button1 -->
- 	 	<button type="button" name="btn1" class="btn btn-warning" aria-pressed="false" onClick="resize(this)"> Resize </button>
+			<!-- Insert Map Here -->
+			    <div id='mapOverlay' class="center-block" style = "position:relative">
+				    <div id="starmap1" class="center-block" data-intro="<h3><b>The Skymap!</b> The <i>boxes are surveys</i>, with their names displayed along their edges. Drag your mouse to navigate the map. Enjoy!</h3>" data-position="top" style="position:absolute">
+				    </div>
 
- 	<!-- //  	<script>
-		 	$(document).ready(function(){
-     			$('#resize').click(function(){
-     		   		  var ctx = this.canvas;
-		 			  ctx.canvas.width  = window.innerWidth;
-		 			  ctx.canvas.height = window.innerHeight;
-		 			  alert("Should resize")
-     			});
-   			}); 
-		// </script> -->
- 	 	<!-- <button type="button" class="btn btn-danger" id="resize">Resize</button> -->
+				    <div id='settingsButton' style="position:absolute; top: 200px; left:0%;">
+				    <a href="#" id='menuToggle'><img src="pics/Settings.png" style="height: 120px;"></a>
+				    </div>
 
- 	 	<!-- Attempt to resize canvas button2 -->
- 	 	<!-- <button type="button" class="btn btn-danger" id="resize">Resize</button> -->
- 	  	<!-- Attempt to create popover with metadata -->
-		<!-- <button type="button" class="btn btn-info" data-container="body" data-toggle="popover" data-placement="top" data-content=planetarium.surveys[0].attribs.Area> Popover Example </button> -->
-   		<!-- Attempt to create zoom buttons -->
-   		<input type="button" value ="-" onclick="zoomIn(this)"/>
-  		<input type="button" value ="+" onclick="zoomOut(this)"/>
-    </div>
-    <div class="navButtons">
-    	<button type="button" class="btn btn-danger" id="moveUp" onClick="moveUp(this)">Up</button>
-    	<button type="button" class="btn btn-danger" id="moveDown" onClick="moveDown(this)">Down</button>
-    	<button type="button" class="btn btn-danger" id="moveRight" onClick="moveRight(this)">Right</button>
-    	<button type="button" class="btn btn-danger" id="moveLeft" onClick="moveLeft(this)">Left</button>
-    </div>
-    <div class="ui sidebar inverted vertical menu">
-	    <a class="item">
-	      1
-	    </a>
-	    <a class="item">
-	      2
-	    </a>
-	    <a class="item">
-	      3
-	    </a>
-	 </div> <!-- sidebar div -->
-	 <div class="pusher">
-	    <!-- Site content !-->
-	 </div>
-</div>
+					<div id='zoomButtons' style="position:absolute; top: 460px; left: 95%; right: 10%; height:100px; width: 30px;">
+				    	<a href="#" id="zoomInButton"><img src='pics/ZoomIn.png' style = 'height: 50px; width: 50px;'></a><br>
+				    	<a href="#" id="zoomOutButton"><img src='pics/ZoomOut.png' style = 'height: 50px; width: 50px; padding-top: 5px;'></a>
+				    </div>
 
-
-<!-- Map Display Options -->
-<div class="container-fluid bg-grey">
-<form>
-<ol>
-	<li class="options">
-		<div class="i">
-			<div class="p">Show Survey Boxes?</div>
-			<div class="o">
-			<input type="radio" name="showgalaxy" value="true" onChange="update(this)" checked /> Yes
-			<input type="radio" name="showgalaxy" value="false" onChange="moveRight(this)"  /> No
+			    </div>
+			<!-- <button id="testbox">Move to The Test Box</button> -->
 			</div>
-		</div>
-	</li>
-</ol>
-</form>
-</div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+
+<!-- Navbar -->
+
 
 </body>
+
+<script type="text/javascript">
+	$("#menuToggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+        $("#navBar").toggleClass("toggled");
+    });
+</script>
+
 </html>
