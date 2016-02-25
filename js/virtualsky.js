@@ -1135,6 +1135,8 @@ VirtualSky.prototype.createSky = function(){
 	if(!this.planets) this.load('planets',this.file.planets);
 
 	// get the survey data
+    // parse!
+    /*
 	if(!this.surveys) {
 		Parse.initialize("mCKlNgkMcYPnmD9U4R9XrEBufj3TxAqAARb1z62D", "tCFhe76t4btZEQiAg7kO2x2KRurRr0U2yO4nw0Gj");
 		var self = this;
@@ -1173,8 +1175,51 @@ VirtualSky.prototype.createSky = function(){
 		        alert("Error: " + error.code + " " + error.message);
 		    }
 		});
-	}
-
+	}*/
+                                                              
+    if(!this.surveys) {
+        var self = this;
+        tempArray = [];
+                                                              
+        var myDataRef = new Firebase('https://brilliant-inferno-1933.firebaseio.com/SurveyObj');
+        
+        myDataRef.on("value", function(snapshot) {
+                     
+            var returns = snapshot.val();
+                     
+            var results = [];
+            
+            var i = -1;
+            for (key in returns) {
+                i = i + 1;
+                results[i] = returns[key];
+                tempArray[i] = {};
+                tempArray[i]["name"] = key;
+                tempArray[i]["col"] = results[i].col;
+                tempArray[i]["coords"] = results[i].coords;
+                     
+                tempArray[i]["attribs"] = results[i].attribs;
+                tempArray[i]["contact"] = results[i].contact;
+                tempArray[i]["otherInfo"] = results[i].otherInfo;
+                     
+                $("#surveyOpts").append($("<option />").val(tempArray[i]["coords"].slice(0,2)).text(tempArray[i]["name"]));
+                var surveyPointer = new Object();
+                surveyPointer.ra = tempArray[i]["coords"][2];
+                surveyPointer.dec = tempArray[i]["coords"][3];
+                surveyPointer.label = tempArray[i]["name"];
+                surveyPointer.colour = 'rgb(255,220,220)';
+                surveyPointer.attribs = tempArray[i]['attribs'];
+                self.addSurveyPointer(surveyPointer);
+            }
+            
+            self.surveys = tempArray;
+            self.draw();
+        }, function (errorObject) {
+            console.log("The read failed: " + errorObject.code);
+        });
+            
+    }
+                                                              
 	// Get the constellation line data
 	if(!this.lines) this.load('lines',this.file.lines);
 
