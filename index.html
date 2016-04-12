@@ -198,8 +198,46 @@ footer .glyphicon {
 	width: 150px;
 }
 
+.sidebar-infobox {
+    position: relative;
+    z-index: -1;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
 .survey-infoitem {
 	padding: 2px 5px !important; 
+}
+
+#zoomButtons {
+    position:absolute;
+    top: 460px;
+    left: 95%;
+    right: 10%;
+    height:100px;
+    width: 30px;
+}
+
+#zoomButtons.toggled {
+    position:absolute;
+    top: 460px;
+    left: 80%;
+    right: 20%;
+    height:100px;
+    width: 30px;
+}
+
+.close-button {
+    position: relative;
+    display:block;
+    float:right;
+    width:30px;
+    height:29px;
+    background:url(pics/CloseButton.png) no-repeat center center;
+    background-size: cover;
+    z-index: 1;
+    margin-top: -12px;
+    margin-right: 5px;
 }
 
 </style>
@@ -263,6 +301,11 @@ $(document).ready(function() {
     		});
 
     		$("#colToggle").click(function(e) {
+                if (planetarium.negative) {
+                    $(".navbar-brand").css('color', 'white !important');
+                } else {
+                    $(".navbar-brand").css('color', 'black !important');
+                }
     			planetarium.negative = !planetarium.negative;
     			planetarium.draw();
     		});
@@ -274,6 +317,31 @@ $(document).ready(function() {
     		$("#zoomOutButton").click(function(e) {
     			planetarium.changeFOV(-.5).draw();
     		});
+
+            $('#projectionToggle').change(function() {
+               if (this.value == 'polar'){
+                   planetarium.selectProjection('polar');
+                   planetarium.draw();
+               } else if (this.value == 'stereo'){
+                   planetarium.selectProjection('stereo');
+                   planetarium.draw();
+               } else if (this.value == 'lambert'){
+                   planetarium.selectProjection('lambert');
+                   planetarium.draw();
+               } else if (this.value == 'equirectangular'){
+                   planetarium.selectProjection('equirectangular');
+                   planetarium.draw();
+               } else if (this.value == 'mollweide'){
+                   planetarium.selectProjection('mollweide');
+                   planetarium.draw();
+               } else if (this.value == 'planechart') {
+                   planetarium.selectProjection('planechart');
+                   planetarium.draw();
+               } else if (this.value == 'gnomic'){
+                   planetarium.selectProjection('gnomic');
+                   planetarium.draw();
+               }
+           });
 
     		$('input[type=radio][name=gridlineOption]').change(function() {
 		        if (this.value == 'AZ') {
@@ -322,8 +390,11 @@ function update(el) {
 
 }
 
+
 </script>
 
+    <!-- firebase -->
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
 
 </head>
 
@@ -382,6 +453,24 @@ function update(el) {
 					</a>
                 </li>
 
+                <li>
+                    
+                    <a href="#">
+                        <div class="col-md-12">
+                             Map Projection<br>
+                             <select class="form-control" id="projectionToggle">
+                               <option value="polar">Polar</option>
+                               <option value="stereo">Stereo</option>
+                               <option value="lambert">Lambert</option>
+                               <option value="equirectangular">Equirectangular</option>
+                               <option value="mollweide">Mollweide</option>
+                               <option value="planechart">Planechart</option>
+                               <option selected value="gnomic">Gnomic (default)</option>
+                           </select>
+                        </div>
+                    </a>
+                </li>
+
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -419,7 +508,7 @@ function update(el) {
 				    <a href="#" id='menuToggle'><img src="pics/Settings.png" style="height: 120px;"></a>
 				    </div>
 
-					<div id='zoomButtons' style="position:absolute; top: 460px; left: 95%; right: 10%; height:100px; width: 30px;">
+					<div id='zoomButtons'>
 				    	<a href="#" id="zoomInButton"><img src='pics/ZoomIn.png' style = 'height: 50px; width: 50px;'></a><br>
 				    	<a href="#" id="zoomOutButton"><img src='pics/ZoomOut.png' style = 'height: 50px; width: 50px; padding-top: 5px;'></a>
 				    </div>
@@ -430,6 +519,15 @@ function update(el) {
         </div>
         <!-- /#page-content-wrapper -->
 
+        <div id="right-sidebar-wrapper">
+            <ul id="right-sidebar-nav" class="sidebar-nav">
+
+                <li class = 'sidebar-brand'>
+                </li>
+
+            </ul>
+        </div>
+
     </div>
 
 <!-- Navbar -->
@@ -438,11 +536,44 @@ function update(el) {
 </body>
 
 <script type="text/javascript">
-	$("#menuToggle").click(function(e) {
+	pinned = [];
+
+    $("#menuToggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
         $("#navBar").toggleClass("toggled");
     });
+
+    pinBox = function(e) {
+        var title = $(".survey-infobox").find("li").eq(0).text();
+
+        if (pinned.indexOf(title) == -1) {
+            if (!$("#right-sidebar-wrapper").hasClass("toggled")) {
+                $("#right-sidebar-wrapper").toggleClass("toggled");
+                $("#zoomButtons").toggleClass("toggled");
+            }
+
+            currDiv = $(".survey-infobox").html();
+            currDiv = '<div id="panel"><a class="close-button" href="#""></a><li><ul class="list-group sidebar-infobox">' + currDiv + "</div></ul></li>";
+
+            $("#right-sidebar-nav").append(currDiv);
+
+            pinned.push(title);
+
+            $(".close-button").click(function(e) {
+                var toDel = $(this).parent();
+                toDel.hide('slow', function(){ 
+                    $(this).remove(); 
+                    pinned.splice(pinned.indexOf($(this).parent().find("ul").find("li").eq(0).text()), 1);
+                    if (pinned.length == 0) {
+                        $("#right-sidebar-wrapper").toggleClass("toggled");
+                        $("#zoomButtons").toggleClass("toggled");
+                    }
+                });
+                
+            })
+        }
+    }
 </script>
 
 </html>
