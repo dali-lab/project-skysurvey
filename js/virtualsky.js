@@ -1198,10 +1198,11 @@ VirtualSky.prototype.createSky = function(){
 	                tempArray[i]["name"] = results[i].name;
 	                tempArray[i]["col"] = results[i].col;
 	                tempArray[i]["coords"] = results[i].coords;
-	                     
+	                tempArray[i]["type"] = results[i].type;     
 	                tempArray[i]["attribs"] = results[i].attribs;
 	                tempArray[i]["contact"] = results[i].contact;
 	                tempArray[i]["otherInfo"] = results[i].otherInfo;
+	                tempArray[i]["display"] = "show";
 	                     
 	                $("#surveyOpts").append($("<option />").val(tempArray[i]["coords"].slice(0,2)).text(tempArray[i]["name"]));
 	                var surveyPointer = new Object();
@@ -2409,6 +2410,10 @@ VirtualSky.prototype.drawSurvey = function(colour,label){
 	maxl = this.maxLine(5);
 
 	for(c = 0; c < this.surveys.length; c++){
+		if (this.surveys[c]['display'] == "hide") {
+			continue;
+		}
+
 		// We will convert all the galaxy outline coordinates to radians
 		// ignoring index 0, 1 as those are strings
 		if (!this.surveysprocessed) for(i = 0; i < this.surveys[c]['coords'].length; i++) this.surveys[c]['coords'][i] *= this.d2r;
@@ -3308,6 +3313,20 @@ VirtualSky.prototype.trigger = function(ev,args){
 			if(typeof this.events[ev][i]==="function")
 				o.push(this.events[ev][i].call(_obj,args))
 	if(o.length > 0) return o
+}
+
+VirtualSky.prototype.filterSurveys = function(types) {
+	if (this.surveys) {
+		for (var i = 0; i < this.surveys.length; i++) {
+			if ($.inArray(this.surveys[i].type, types) != -1) {
+				this.surveys[i].display = "show";
+			} else {
+				this.surveys[i].display = "hide";
+			}
+		}
+
+		this.draw();
+	}
 }
 
 // Some useful functions
