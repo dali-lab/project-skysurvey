@@ -405,6 +405,17 @@ $(document).ready(function() {
 		        }
 		    });
 
+            $('button#goToLoc').on('click',function(){
+                   var ra = parseFloat($("#raIn").val());
+                   var dec = parseFloat($("#decIn").val());
+
+                   if (isNaN(ra) || isNaN(dec)) {
+                        return;
+                   } else {
+                       planetarium.panTo(ra, dec,3000);
+                   }
+           });
+
 		   // $('body').chardinJs('start');
 
         };
@@ -462,6 +473,26 @@ function update(el) {
 	                	</div>
                 	</div>
                 </li>
+
+                <br>
+                <br>
+
+                <li>
+                    <div>
+                        <div class = 'col-md-4'>
+                            <input class="form-control" id='raIn' placeholder="RA"></input>
+                        </div>
+
+                        <div class = 'col-md-4'>
+                                <input class="form-control" id='decIn' placeholder="DEC"></input>
+                        </div>
+
+                        <div class = 'col-md-4'>
+                            <button type="button" id="goToLoc" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-screenshot"></span> </button>
+                        </div>
+                    </div>
+                </li>
+
 
                 <br>
                 <br>
