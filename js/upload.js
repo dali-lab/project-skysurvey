@@ -2,6 +2,20 @@ var datasetElement;
 var telescopeElement;
 var dateElement;
 var ref;
+var expoElement;
+var expoUnitElement;
+var bandElement;
+var bandUnitElement;
+var psfElement;
+var psfUnitElement;
+var limmagElement;
+var limmagUnitElement;
+var areaElement;
+var areaUnitElement;
+var contactElement;
+var emailElement;
+var linkElement;
+var infoElement;
 var coordsArray = [];
 
 //var fileToUploadElement = document.getElementById("fileToUpload");
@@ -12,7 +26,23 @@ window.onload = function() {
     datasetElement = document.getElementById("dataset");
     telescopeElement = document.getElementById("telescope");
     dateElement = document.getElementById("date");
+    expoElement = document.getElementById("expo");
+    expoUnitElement = document.getElementById("expounits");
+    bandElement = document.getElementById("band");
+    bandUnitElement = document.getElementById("bandunits");
+    psfElement = document.getElementById("psf");
+    psfUnitElement = document.getElementById("psfunits");
+    limmagElement = document.getElementById("limmag");
+    limmagUnitElement = document.getElementById("limmagunits");
+    areaElement = document.getElementById("area");
+    areaUnitElement = document.getElementById("areaunits"); // Note!!!
+    contactElement = document.getElementById("contact");
+    emailElement = document.getElementById("email");
+    linkElement = document.getElementById("link");
+    infoElement = document.getElementById("Miscellaneous");
+
     ref = new Firebase("https://brilliant-inferno-1933.firebaseio.com/SurveyObj/");
+    window.alert("page onload");
 
     function handleFileSelect(evt) {
         var files = evt.target.files; // FileList object
@@ -67,23 +97,28 @@ window.onload = function() {
                 console.log(coordsArray);
             };
 
-            reader.readAsText(f);   
+            reader.readAsText(f);
         }
       }
 
     document.getElementById('fileToUpload').addEventListener('change', handleFileSelect, false);
+
 }
 
 
 function startUploading() {
+  // Which ones are required?
   if (datasetElement.value=="" || datasetElement.value==null ||
     telescopeElement.value=="" || telescopeElement.value==null ||
-    dateElement.value=="" || dateElement.value==null || 
+    dateElement.value=="" || dateElement.value==null ||
+    contactElement.value=="" || contactElement.value==null ||
+    emailElement.value=="" || emailElement.value==null ||
     coordsArray.length == 0)
     window.alert("Please fill in all required fields!");
   else {
     window.alert("Start Uploading");
-    ref.push({ 'name': datasetElement.value, 'attribs': {'telescope': telescopeElement.value,'date':dateElement.value}, 'coords': coordsArray});
+    ref.push({ 'name': datasetElement.value, 'contact':{'email': emailElement.value,'link': linkElement.value,'name': contactElement.value}, 'attribs': {'telescope': telescopeElement.value,'date':dateElement.value,'Area':areaElement.value+areaUnitElement.value,'psf':psfElement.value+psfUnitElement.value,
+    'expTime': expoElement.value + expoUnitElement.value, 'lMag': limmagElement.value + limmagUnitElement.value}, 'coords': coordsArray}, 'otherInfo': infoElement.value);
     window.alert("New Survey Created!");
   }
 }
