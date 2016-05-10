@@ -92,6 +92,11 @@ window.onload = function() {
 
                 }
 
+                if (coordsArray[0] != coordsArray[coordsArray.length - 2] && coordsArray[1] != coordsArray[coordsArray.length - 1]) {
+                    coordsArray.push(coordsArray[0]);
+                    coordsArray.push(coordsArray[1]);
+                }
+
                 $("#fileDesc").text( "Parsed Successfully! (" + (lines.length - 1).toString() + " RA/DEC Pairs Found)" );
                 $("#fileDesc").show();
                 console.log(coordsArray);
