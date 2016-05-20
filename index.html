@@ -19,6 +19,7 @@
 	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
 	<script src="js/chardinjs.min.js"></script>
     <script src="js/bootstrap-slider.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYabbeqOtLofQA_fyk4IHCLQOitiU3uP0&libraries=geometry"></script>
 
 <!--
 <style>
@@ -113,27 +114,20 @@ h4 {
     font-style: normal;
 }
 .panel {
-    border: 1px solid #f4511e;
-    border-radius:0 !important;
+    border: 0px !important;
     transition: box-shadow 0.5s;
 }
 .panel:hover {
     box-shadow: 5px 0px 40px rgba(0,0,0, .2);
 }
 .panel-footer .btn:hover {
-    border: 1px solid #f4511e;
     background-color: #fff !important;
     color: #f4511e;
 }
 .panel-heading {
-    color: #fff !important;
-    background-color: #f4511e !important;
+    color: white !important;
+    background-color: #0f285f !important;
     padding: 25px;
-    border-bottom: 1px solid transparent;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
 }
 .panel-footer {
     background-color: white !important;
@@ -150,6 +144,11 @@ h4 {
     background-color: #f4511e;
     color: #fff;
 }
+
+.list-group-item a:hover {
+    color: black !important;
+}
+
 .navbar {
     margin-bottom: 0;
     z-index: 9999;
@@ -288,6 +287,25 @@ footer .glyphicon {
 
 <script>
 $(document).ready(function() {
+        function inside(point, vs) {
+            // ray-casting algorithm based on
+            // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+            var x = point[0], y = point[1];
+
+            var inside = false;
+            for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+                var xi = vs[i][0], yi = vs[i][1];
+                var xj = vs[j][0], yj = vs[j][1];
+
+                var intersect = ((yi > y) != (yj > y))
+                    && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                if (intersect) inside = !inside;
+            }
+
+            return inside;
+        };
+
 // 		planetarium = $.virtualsky({id:'preview',width:500,height:350});
 		window.onload = function(){
 			skydefault = $.virtualsky({});
@@ -416,6 +434,95 @@ $(document).ready(function() {
                    }
            });
 
+            $('button#filterAtLoc').on('click',function(){
+                   var ra = parseFloat($("#raIn2").val());
+                   var dec = parseFloat($("#decIn2").val());
+
+                   ra = (ra%360)*planetarium.d2r;
+                   dec = dec*planetarium.d2r;
+
+                   if (isNaN(ra) || isNaN(dec)) {
+                        return;
+                   } else {
+                        myPoint = planetarium.radec2xy(ra, dec);
+                        myPoint = [ myPoint.x, myPoint.y ];
+
+                        for (var i = 0;  i < planetarium.surveys.length; i++) {
+                            polygon = [];
+
+                            for (var j = 0; j < planetarium.surveys[i].coords.length; j += 2) {
+                                xypoint = planetarium.radec2xy(planetarium.surveys[i].coords[j], planetarium.surveys[i].coords[j + 1]);
+                                xypoint = [ xypoint.x, xypoint.y ];
+
+                                polygon.push(xypoint);
+                            }
+
+                            if (inside(myPoint, polygon)) {
+                                planetarium.surveys[i].display = "show";
+
+                                if (pinned.indexOf(planetarium.surveys[i].name) == -1) {
+                                    if (!$("#right-sidebar-wrapper").hasClass("toggled")) {
+                                        $("#right-sidebar-wrapper").toggleClass("toggled");
+                                        $("#zoomButtons").toggleClass("toggled");
+                                    }
+
+                                    currDiv = '<li href="#" class="list-group-item active survey-infoitem">' +
+                                        planetarium.surveys[i].name + 
+                                        "</li><li href=\"#\" class=\"list-group-item survey-infoitem\">Area: " + planetarium.surveys[i].attribs.Area + "</li>" +
+                                        "<li href=\"#\" class=\"list-group-item survey-infoitem\">Band: " + planetarium.surveys[i].attribs.band + "</li>" +
+                                        "<li href=\"#\" class=\"list-group-item survey-infoitem\">Date: " + planetarium.surveys[i].attribs.date + "</li>" +
+                                        "<li href=\"#\" class=\"list-group-item survey-infoitem\">Telescope: " + planetarium.surveys[i].attribs.telescope + "</li>";
+
+                                    currDiv = '<div id="panel"><a class="close-button" href="#""></a><li><ul class="list-group sidebar-infobox">' + currDiv + "</div></ul></li>";    
+
+                                    $("#right-sidebar-nav").append(currDiv);
+
+                                    pinned.push(planetarium.surveys[i].name);
+
+                                    $(".close-button").click(function(e) {
+                                        var toDel = $(this).parent();
+                                        toDel.hide('slow', function(){ 
+                                            $(this).remove(); 
+                                            pinned.splice(pinned.indexOf($(this).parent().find("ul").find("li").eq(0).text()), 1);
+                                            if (pinned.length == 0) {
+                                                $("#right-sidebar-wrapper").toggleClass("toggled");
+                                                $("#zoomButtons").toggleClass("toggled");
+                                            }
+                                        });
+                                        
+                                    })
+                                }
+
+                            } else {
+                                planetarium.surveys[i].display = "hide";
+                            }
+                        }
+
+                        planetarium.draw()
+                   }
+           });
+
+            $("#resetFilters").on('click', function() {
+                for (var i = 0;  i < planetarium.surveys.length; i++) {
+                    planetarium.surveys[i].display = "show";
+                }
+
+                planetarium.draw();
+            })
+
+            $('button#setLatLong').on('click',function(){
+                   var lat = parseFloat($("#latIn").val());
+                   var lng = parseFloat($("#longIn").val());
+
+                   if (isNaN(lat) || isNaN(lng)) {
+                        return;
+                   } else {
+                       planetarium.setLatitude(lat);
+                       planetarium.setLongitude(lng);
+                       planetarium.draw();
+                   }
+           });
+
 		   // $('body').chardinJs('start');
 
         };
@@ -462,86 +569,163 @@ function update(el) {
             	<li class = 'sidebar-brand'>
                 </li>
 
-                <li>
-                	<div>
-	                	<div class = 'col-md-8'>
-	                		<select class="form-control" id='surveyOpts'></select>
-	                	</div>
-
-	                	<div class = 'col-md-4'>
-	                		<button type="button" id="locate" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-search"></span> </button>
-	                	</div>
-                	</div>
-                </li>
-
-                <br>
                 <br>
 
                 <li>
-                    <div>
-                        <div class = 'col-md-4'>
-                            <input class="form-control" id='raIn' placeholder="RA"></input>
-                        </div>
+                    <div class="panel-group" role="tablist">
+                       <div class="panel panel-default">
+                          <div class="panel-heading" role="tab" id="collapseListGroupHeading2">
+                             <h4 class="panel-title"> <a class="" role="button" data-toggle="collapse" href="#collapseListGroup2" aria-expanded="true" aria-controls="collapseListGroup2"> Navigation Settings </a> </h4>
+                          </div>
+                          <div id="collapseListGroup2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading2" aria-expanded="true">
+                             <ul class="list-group">
+                                <li class="list-group-item">
+                                    <div class = "row">
+                                        <span style = "padding-left: 15px;">Go to Survey:</span>
+                                        <div class = "row" style = "padding-left: 15px; padding-right: 15px;">
+                                            <div class = 'col-md-8'>
+                                                <select class="form-control" id='surveyOpts'></select>
+                                            </div>
 
-                        <div class = 'col-md-4'>
-                                <input class="form-control" id='decIn' placeholder="DEC"></input>
-                        </div>
+                                            <div class = 'col-md-4'>
+                                                <button type="button" id="locate" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-search"></span> </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
 
-                        <div class = 'col-md-4'>
-                            <button type="button" id="goToLoc" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-screenshot"></span> </button>
-                        </div>
+                                <li class="list-group-item">
+                                    <div class = "row">
+                                        <span style = "padding-left: 10px;">Set Lat/Long:</span>
+                                    <div class = "row" style = "padding-left: 15px; padding-right: 15px;">
+                                        <div class = 'col-md-4'>
+                                            <input class="form-control" id='latIn' placeholder="LAT"></input>
+                                        </div>
+
+                                        <div class = 'col-md-4'>
+                                                <input class="form-control" id='longIn' placeholder="LONG"></input>
+                                        </div>
+
+                                        <div class = 'col-md-4'>
+                                            <button type="button" id="setLatLong" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-screenshot"></span> </button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <div class = "row">
+                                        <span style = "padding-left: 10px;">Go to RA/DEC:</span>
+                                        <div class = "row" style = "padding-left: 15px; padding-right: 15px;">
+                                            <div class = 'col-md-4'>
+                                                <input class="form-control" id='raIn' placeholder="RA"></input>
+                                            </div>
+
+                                            <div class = 'col-md-4'>
+                                                    <input class="form-control" id='decIn' placeholder="DEC"></input>
+                                            </div>
+
+                                            <div class = 'col-md-4'>
+                                                <button type="button" id="goToLoc" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-screenshot"></span> </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+
+                             </ul>
+                          </div>
+                       </div>
                     </div>
                 </li>
 
-
-                <br>
-                <br>
-
                 <li>
-                    <a href = "#" id="surveyToggle">Show Surveys </a>
+                    <div class="panel-group" role="tablist">
+                       <div class="panel panel-default">
+                          <div class="panel-heading" role="tab" id="collapseListGroupHeading1">
+                             <h4 class="panel-title"> <a class="" role="button" data-toggle="collapse" href="#collapseListGroup1" aria-expanded="true" aria-controls="collapseListGroup1"> Display Settings </a> </h4>
+                          </div>
+                          <div id="collapseListGroup1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading1" aria-expanded="true">
+                             <ul class="list-group">
+                                <li class="list-group-item"><a href = "#" id="surveyToggle">Show Surveys </a></li>
+                                <li class="list-group-item"><a href = "#" id="colToggle">Negative </a></li>
+                                <li class="list-group-item"><a href = "#" id="starToggle">Show Stars</a></li>
+                                <li class="list-group-item"><a href = "#" id="constellationToggle">Show Constellations</a></li>
+                                <li class="list-group-item">
+                                    <div class = "row">
+                                        <a href="#">
+                                        Gridlines<br>
+                                            <label class="radio-inline">
+                                              <input type="radio" name="gridlineOption" id="azRadio" value="AZ" checked="checked"> AZ
+                                            </label>
+                                            <label class="radio-inline">
+                                              <input type="radio" name="gridlineOption" id="eqRadio" value="EQ"> EQ
+                                            </label>
+                                            <label class="radio-inline">
+                                              <input type="radio" name="gridlineOption" id="galRadio" value="GAL"> GAL
+                                            </label>
+                                        </a>
+                                    </div>
+                                </li>
+                                <li class="list-group-item"><a href="#">
+                                    <div class="row">
+                                        <div class = "col-md-12">
+                                             Map Projection<br>
+                                             <select class="form-control" id="projectionToggle">
+                                               <option value="polar">Polar</option>
+                                               <option value="stereo">Stereo</option>
+                                               <option value="lambert">Lambert</option>
+                                               <option value="equirectangular">Equirectangular</option>
+                                               <option value="mollweide">Mollweide</option>
+                                               <option value="planechart">Planechart</option>
+                                               <option selected value="gnomic">Gnomic (default)</option>
+                                           </select>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+
+                             </ul>
+                          </div>
+                       </div>
+                    </div>
                 </li>
 
                 <li>
-                    <a href = "#" id="colToggle">Negative </a>
-                </li>
+                    <div class="panel-group" role="tablist">
+                       <div class="panel panel-default">
+                          <div class="panel-heading" role="tab" id="collapseListGroupHeading3">
+                             <h4 class="panel-title"> <a class="" role="button" data-toggle="collapse" href="#collapseListGroup3" aria-expanded="true" aria-controls="collapseListGroup3"> Filter Settings </a> </h4>
+                          </div>
+                          <div id="collapseListGroup3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading3" aria-expanded="true">
+                             <ul class="list-group">
+                                <li class="list-group-item">
+                                    <div class = "row">
+                                        <span style = "padding-left: 10px;">Filter at RA/DEC:</span>
+                                        <div class = "row" style = "padding-left: 15px; padding-right: 15px;">    
+                                            <div class = 'col-md-4'>
+                                                <input class="form-control" id='raIn2' placeholder="RA"></input>
+                                            </div>
 
-                <li>
-                    <a href = "#" id="starToggle">Show Stars</a>
-                </li>
-                <li>
-                    <a href = "#" id="constellationToggle">Show Constellations</a>
-                </li>
-                <li>
-                    <a href="#">
-                    Gridlines<br>
-                    <label class="radio-inline">
-					  <input type="radio" name="gridlineOption" id="azRadio" value="AZ" checked="checked"> AZ
-					</label>
-					<label class="radio-inline">
-					  <input type="radio" name="gridlineOption" id="eqRadio" value="EQ"> EQ
-					</label>
-					<label class="radio-inline">
-					  <input type="radio" name="gridlineOption" id="galRadio" value="GAL"> GAL
-					</label>
-					</a>
-                </li>
+                                            <div class = 'col-md-4'>
+                                                    <input class="form-control" id='decIn2' placeholder="DEC"></input>
+                                            </div>
 
-                <li>
-                    
-                    <a href="#">
-                        <div class="col-md-12">
-                             Map Projection<br>
-                             <select class="form-control" id="projectionToggle">
-                               <option value="polar">Polar</option>
-                               <option value="stereo">Stereo</option>
-                               <option value="lambert">Lambert</option>
-                               <option value="equirectangular">Equirectangular</option>
-                               <option value="mollweide">Mollweide</option>
-                               <option value="planechart">Planechart</option>
-                               <option selected value="gnomic">Gnomic (default)</option>
-                           </select>
-                        </div>
-                    </a>
+                                            <div class = 'col-md-4'>
+                                                <button type="button" id="filterAtLoc" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-screenshot"></span> </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="list-group-item">
+                                    <a href = "#" id="resetFilters">Reset Filters</a>
+                                </li>
+
+                             </ul>
+                          </div>
+                       </div>
+                    </div>
                 </li>
 
             </ul>
@@ -576,6 +760,10 @@ function update(el) {
 			    <div id='mapOverlay' class="center-block" style = "position:relative">
 				    <div id="starmap1" class="center-block" data-intro="<h3><b>The Skymap!</b> The <i>boxes are surveys</i>, with their names displayed along their edges. Drag your mouse to navigate the map. Enjoy!</h3>" data-position="top" style="position:absolute">
 				    </div>
+
+                    <div style="position:fixed; bottom: 15px; left:5px; color: white;">
+                        <span id = "posLabel"></span>
+                    </div>
 
 				    <div id='settingsButton' style="position:absolute; top: 200px; left:0%;">
 				        <a href="#" id='menuToggle'><img src="pics/Settings.png" style="height: 120px;"></a>
