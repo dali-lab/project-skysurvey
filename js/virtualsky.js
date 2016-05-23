@@ -2158,6 +2158,10 @@ VirtualSky.prototype.draw = function(proj){
 		if(typeof s.callback.geo=="function") s.callback.geo.call(s);
 	});
 
+	if ($("#posLabel").length) {
+		$("#posLabel").text("RA: " + (this.ra_off / this.d2r) + " DEC: " + (this.dc_off / this.d2r))
+	}
+
 	return this;
 }
 
