@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700,300italic' rel='stylesheet' type='text/css'>
-    
+
 <style>
     .jumbotron {
         background-color: #420A72;
@@ -218,7 +218,7 @@ footer .glyphicon {
 
 <!-- Headline and Introduction -->
 <div class="jumbotron text-center">
-    <h1>Upload Survey(s)</h1>
+    <h1>Upload Survey</h1>
 </div>
 
 <!-- Form Input -->
@@ -239,10 +239,34 @@ footer .glyphicon {
                 <label class="control-label" for="telescope">TELESCOPE AND CONFIGURATION:</label>
                 <input type="text" class="form-control" id="telescope" placeholder="Enter Telescope Type and Configuration">
 
-                <label class="control-label" for="date">DATE:</label>
-                <div class = "input-group">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
-                    <input type="text" class="form-control" id="date" placeholder="Click to Pick a Date">
+                <div class = "row">
+                    <div class = "col-md-4">
+                        <label class="control-label" for="startdate">START DATE:</label>
+                        <div class = "input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
+                            <input type="text" class="form-control" id="startdate" placeholder="Click to Pick a Date">
+                        </div>
+                    </div>
+
+                    <div class = "col-md-8">
+                      <label class="control-label" for="starttime">TIME (Optional):</label>
+                      <input type="text" class="form-control" id="starttime" placeholder="Enter Start Time (eg. 01:01:01 UTC)">
+                    </div>
+                </div>
+
+                <div class = "row">
+                    <div class = "col-md-4">
+                        <label class="control-label" for="enddate">END DATE:</label>
+                        <div class = "input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
+                            <input type="text" class="form-control" id="enddate" placeholder="Click to Pick a Date">
+                        </div>
+                    </div>
+
+                    <div class = "col-md-8">
+                      <label class="control-label" for="endtime">TIME (Optional):</label>
+                      <input type="text" class="form-control" id="endtime" placeholder="Enter End Time (eg. 01:01:01 UTC)">
+                    </div>
                 </div>
 
                 <label class="control-label" for="fileToUpload">CSV WITH RA/DEC COORDS:</label>
@@ -264,7 +288,16 @@ footer .glyphicon {
             </div>
 
             <div class = "col-md-8">
+
+                <div class = "col-md-12">
+                    <form action="">
+                        <input type="radio" name="type" value="Spectroscopy"> Spectroscopy<br>
+                        <input type="radio" name="type" value="Imaging"> Imaging<br>
+                    </form>
+                </div>
+
                 <div class = "row">
+
                     <div class = "col-md-8">
                         <label class="control-label" for="expo">EXPOSURE TIME:</label>
                         <input type="text" class="form-control" id="expo" placeholder="Enter Exposure Time (eg. 200)">
@@ -273,10 +306,9 @@ footer .glyphicon {
                     <div class = "col-md-4">
                         <label class="control-label" for="expounits">UNITS</label>
                         <select class="form-control" id="expounits">
-                            <option value="volvo">Volvo</option>
-                            <option value="saab">Saab</option>
-                            <option value="mercedes">Mercedes</option>
-                            <option value="audi">Audi</option>
+                            <option value="volvo">seconds</option>
+                            <option value="saab">minutes</option>
+                            <option value="mercedes">hours</option>
                         </select>
                     </div>
                 </div>
@@ -297,10 +329,14 @@ footer .glyphicon {
                     <div class = "col-md-4">
                         <label class="control-label" for="bandunits">UNITS</label>
                         <select class="form-control" id="bandunits">
-                            <option value="volvo">Volvo</option>
-                            <option value="saab">Saab</option>
-                            <option value="mercedes">Mercedes</option>
-                            <option value="audi">Audi</option>
+                            <option value="Angstroms">Wavelength: Angstroms</option>
+                            <option value="Microns">Wavelength: Microns</option>
+                            <option value="Meters">Wavelength: Meters</option>
+                            <option value="keV">Energy: keV</option>
+                            <option value="MeV">Energy: MeV</option>
+                            <option value="GeV">Energy: GeV</option>
+                            <option value="MHz">Frequency: MHz</option>
+                            <option value="GHz">Frequency: GHz</option>
                         </select>
                     </div>
                 </div>
@@ -313,26 +349,26 @@ footer .glyphicon {
                     <div class = "col-md-4">
                         <label class="control-label" for="psfunits">UNITS</label>
                         <select class="form-control" id="psfunits">
-                            <option value="volvo">Volvo</option>
-                            <option value="saab">Saab</option>
-                            <option value="mercedes">Mercedes</option>
-                            <option value="audi">Audi</option>
+                            <option value="arcsec">arcsec</option>
+                            <option value="arcmin">arcmin</option>
                         </select>
                     </div>
                 </div>
 
                 <div class = "row">
                     <div class = "col-md-8">
-                        <label class="control-label" for="limmag">LIMITING MAGNITUDE:</label>
-                        <input type="text" class="form-control" id="limmag" placeholder="Enter Limiting Magnitude (eg. 200)">
+                        <label class="control-label" for="limmag">LIMITING FLUX / MAGNITUDE:</label>
+                        <input type="text" class="form-control" id="limmag" placeholder="Enter Flux / Flux Density / Magnitude">
                     </div>
                     <div class = "col-md-4">
                         <label class="control-label" for="limmagunits">UNITS</label>
                         <select class="form-control" id="limmagunits">
-                            <option value="volvo">Volvo</option>
-                            <option value="saab">Saab</option>
-                            <option value="mercedes">Mercedes</option>
-                            <option value="audi">Audi</option>
+                            <option value="flux">Flux: erg cm^-2 sec^-1</option>
+                            <option value="microJansky">Flux Density: microJansky</option>
+                            <option value="milliJansky">Flux Density: milliJansky</option>
+                            <option value="Jansky">Flux Density: Jansky</option>
+                            <option value="Ab">Magnitude: Ab</option>
+                            <option value="Vega">Magnitude: Vega</option>
                         </select>
                     </div>
                 </div>
@@ -345,13 +381,12 @@ footer .glyphicon {
                     <div class = "col-md-4">
                         <label class="control-label" for="areaunits">UNITS</label>
                         <select class="form-control" id="areaunits">
-                            <option value="volvo">Volvo</option>
-                            <option value="saab">Saab</option>
-                            <option value="mercedes">Mercedes</option>
-                            <option value="audi">Audi</option>
+                            <option value="arcmin">arcmin^-2</option>
+                            <option value="deg">deg^-2</option>
                         </select>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -410,11 +445,19 @@ footer .glyphicon {
 
 <script>
 $(document).ready(function() {
-    $('#date')
+    $('#startdate')
         .datepicker({
             format: 'mm/dd/yyyy'
         });
 });
+
+$(document).ready(function() {
+    $('#enddate')
+        .datepicker({
+            format: 'mm/dd/yyyy'
+        });
+});
+
 </script>
 
 </html>

@@ -1,10 +1,14 @@
 var datasetElement;
 var telescopeElement;
-var dateElement;
+var startdateElement;
+var starttimeElement;
+var enddateElement;
+var endtimeElement;
 var ref;
 var expoElement;
 var expoUnitElement;
-var bandElement;
+var band1Element;
+var band2Element;
 var bandUnitElement;
 var psfElement;
 var psfUnitElement;
@@ -17,10 +21,6 @@ var emailElement;
 var linkElement;
 var infoElement;
 var coordsArray = [];
-
-//var fileToUploadElement = document.getElementById("fileToUpload");
-//var expoElement = document.getElementById("dataset");
-// more to be added
 
 window.onload = function() {
     datasetElement = document.getElementById("dataset");
