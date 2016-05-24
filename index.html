@@ -523,6 +523,55 @@ $(document).ready(function() {
                    }
            });
 
+            $('#searchForObj').on('click', function() {
+               toSend = $('#searchObjectName').val()
+
+               toSend = encodeURIComponent(toSend).replace(/%20/g,'+')
+
+               sesameURL = "http://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-ox/~SNVA?" + toSend
+
+               $.ajax({
+                 url: sesameURL,
+                 type: "get", //send it through get method
+                 dataType: "xml",
+                 success: function(response) {
+                    $('#modalResults').text('');
+                    var resolver = $(response).find("Resolver").each(function() {
+                        var name = $(this).find('oname').text();
+                        var fail = $(this).find('INFO').text();
+
+                        if (fail != "Zero (0) answers") {
+                            var ajaxRA = $(this).find('jradeg').text();
+                            var ajaxDec = $(this).find('jdedeg').text();
+                            var tableRow = "<tr><td> " + name + "</td>";
+                            tableRow += "<td> " + ajaxRA + "</td>"
+                            tableRow += "<td> " + ajaxDec + "</td>";
+                            tableRow += "<td> " + $(this).attr('name') + "</td>";
+                            tableRow += "<td><a href=\"#\" onclick=\"selectResult(this)\" class=\"btn btn-info\" role=\"button\">Select</a></td></tr>";
+
+                            $('#modalResults').append(tableRow);
+                        } else {
+                            var tableRow = "<tr><td>No Result Found</td>";
+                            tableRow += "<td> </td>";
+                            tableRow += "<td> </td>";
+                            tableRow += "<td> " + $(this).attr('name') + "</td>";
+                            tableRow += "<td></td></tr>";
+
+                            $('#modalResults').append(tableRow);
+                        }
+                    });
+                    $('#searchModal').modal('show');
+                   // var resolvers = response.getElementsByTagName("Resolver")[0];
+                   // var name = resolvers.find('oname').text();
+
+                   // alert (name + ':' + ajaxRA + ", " + ajaxDec)
+                 },
+                 error: function(xhr) {
+                   //Do Something to handle error
+                 }
+               });
+           })
+
 		   // $('body').chardinJs('start');
 
         };
@@ -550,6 +599,16 @@ function update(el) {
 
 }
 
+function selectResult(el) {
+    var name = $(el).parent().parent().children().eq(0).text();
+    var searchRa = parseFloat($(el).parent().parent().children().eq(1).text());
+    var searchDec = parseFloat($(el).parent().parent().children().eq(2).text());
+    planetarium.panTo(searchRa, searchDec, 2000);
+    planetarium.addPointer(searchRa, searchDec, name);
+    $('#searchModal').modal('hide');
+    $('#modalResults').text('');
+}
+
 
 </script>
 
@@ -561,6 +620,35 @@ function update(el) {
 <body id="home">
 
 <div id="wrapper" class="toggled">
+
+        <div class="modal fade" tabindex="-1" role="dialog" id="searchModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Search Results</h4>
+              </div>
+              <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>RA</th>
+                        <th>DEC</th>
+                        <th>Resolver</th>
+                        <th>&nbsp;</th>
+                      </tr>
+                    </thead>
+                    <tbody id="modalResults">
+                    </tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
@@ -579,6 +667,22 @@ function update(el) {
                           </div>
                           <div id="collapseListGroup2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading2" aria-expanded="true">
                              <ul class="list-group">
+                                <li class="list-group-item">
+                                    <div class = "row">
+                                        <span style = "padding-left: 15px;">Search for Object:</span>
+                                        <div class = "row" style = "padding-left: 15px; padding-right: 15px;">
+                                            <div class = 'col-md-8'>
+                                                <input class="form-control" id='searchObjectName'></select>
+                                            </div>
+
+                                            <div class = 'col-md-4'>
+                                                <button type="button" id="searchForObj" class="btn btn-primary btn-md btn-block"><span class="glyphicon glyphicon-search"></span> </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+
                                 <li class="list-group-item">
                                     <div class = "row">
                                         <span style = "padding-left: 15px;">Go to Survey:</span>

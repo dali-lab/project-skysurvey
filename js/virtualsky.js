@@ -3225,6 +3225,27 @@ VirtualSky.prototype.addSurveyPointer = function(input){
 	return (this.pointers.length);
 }
 
+VirtualSky.prototype.addPointer = function(ra, dec, label){
+	// Check if we've already added this
+	var input = {"ra": ra, "dec": dec, "label": label}
+	var style,url,img,label,credit;
+	var matched = -1;
+	var p;
+	for(var i = 0 ; i < this.pointers.length ; i++){
+		if(this.pointers[i].ra == input.ra && this.pointers[i].dec == input.dec && this.pointers[i].label == input.label) matched = i;
+	}
+	// Hasn't been added already
+	if(matched < 0){
+		input.ra *= 1;	// Correct for a bug
+		input.dec *= 1;
+		i = this.pointers.length;
+		p = input;
+		p.d = is(p.d, "number")?p.d:5;
+		this.pointers[i] = p;
+	}
+	return (this.pointers.length);
+}
+
 VirtualSky.prototype.changeAzimuth = function(inc){
 	this.az_off += (typeof inc==="number") ? inc : 5;
 	this.draw();
